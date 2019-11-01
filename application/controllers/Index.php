@@ -22,4 +22,10 @@ class IndexController extends BaseController
         $this->assign['pagetitle'] = 'Yaf_Demo';
         echo $this->twig->render('index/index.twig', $this->assign);
     }
+
+    public function testAction()
+    {
+        echo 123;
+        
+    }
 }
