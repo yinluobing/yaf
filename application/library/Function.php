@@ -1,6 +1,7 @@
 <?php
 
 
+use Yaf\Loader;
 
 function echojson($arr)
 {
@@ -48,7 +49,7 @@ function page($url,$page,$count,$offset = 20,$status='')
  */
 function loginstatus()
 {
-    $session = Yaf_Session::getInstance();
+    $session = Session::getInstance();
     if($session->admin)
     {
         return true;
@@ -157,7 +158,7 @@ function cutstr($string, $sublen, $start = 0, $code = 'UTF-8')
 function sendmail( $toemail, $title, $content)
 {
 
-    Yaf_Loader::import('phpmailer.php');
+    Loader::import('phpmailer.php');
     $config = new Yaf_Config_Ini('./conf/application.ini', 'common');
     $mail = new PHPMailer();
 

@@ -16,19 +16,15 @@ class IndexController extends BaseController
 
     /**
      * 网站首页入口
-     * @throws Yaf_Exception_TypeError
      */
     public function indexAction()
     {
-        echo '<pre/>';
-        var_dump($_SERVER);
-        $this->assign['pagetitle'] = 'Yaf_Demo';
-        echo $this->twig->render('index/index.twig', $this->assign);
+        var_dump($this->getRequest());
+        return $this->twig->display('index/index.twig', $this->assign);
     }
 
     public function testAction()
     {
-        echo 123;
-
+        var_dump($this->getRequest());
     }
 }

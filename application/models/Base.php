@@ -1,5 +1,7 @@
 <?php
 
+use Yaf\Registry;
+
 /**
  * Created by PhpStorm.
  * User: icker
@@ -12,6 +14,6 @@ class BaseModel
 
     public function __construct()
     {
-        $this->db = Yaf_Registry::get('db');
+        $this->db = Registry::get('db');
     }
 }

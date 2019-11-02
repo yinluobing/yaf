@@ -1,5 +1,9 @@
 <?php
 
+use Yaf\Dispatcher;
+use Yaf\Registry;
+use Yaf\Session;
+
 /**
  *      [CodeJm!] Author CodeJm[codejm@163.com].
  *
@@ -78,7 +82,7 @@ class Help
     public static function fbu($url = '')
     {
         $uri = $url;
-        $config = \Yaf_Registry::get('configarr');
+        $config = Registry::get('configarr');
         $url = rtrim($config['application']['site']['uploadUrl'], '/') . '/' . ltrim($url, '/');
 
         if (stripos($url, 'http://') === false) {
@@ -100,7 +104,7 @@ class Help
      */
     public static function sfbu($url = '')
     {
-        $config = \Yaf_Registry::get('configarr');
+        $config = Registry::get('configarr');
         $url = $config['application']['site']['uploadUri'] . $url;
         return PUBLIC_PATH . $url;
     }
@@ -116,10 +120,10 @@ class Help
     {
         //$route = preg_replace('/^m\//is', 'mm/', $route);
         // rewrite start
-        $rewrite_route = \Yaf_Registry::get('rewrite_route');
+        $rewrite_route = Registry::get('rewrite_route');
         $route_lower = strtolower($route);
         if (isset($rewrite_route[$route_lower])) {
-            $router = Yaf_Dispatcher::getInstance()->getRouter();
+            $router = Dispatcher::getInstance()->getRouter();
             $currRoute = $router->getRoute($route_lower);
             if ($currRoute instanceof Yaf_Route_Regex) {
                 $route_temp = explode('/', $route);
@@ -129,7 +133,7 @@ class Help
                 $url = $currRoute->assemble($params, array());
             }
             if ($url) {
-                $config = \Yaf_Registry::get('configarr');
+                $config = Registry::get('configarr');
                 $url = $config['application']['site']['baseUri'] . $url;
                 $params_other = array();
                 foreach ($params as $key => $value) {
@@ -157,15 +161,15 @@ class Help
 
 
         // 系统默认
-        $moduleName = \Yaf_Dispatcher::getInstance()->getRequest()->getModuleName();
-        $controllerName = \Yaf_Dispatcher::getInstance()->getRequest()->getControllerName();
-        $actionName = \Yaf_Dispatcher::getInstance()->getRequest()->getActionName();
+        $moduleName = Dispatcher::getInstance()->getRequest()->getModuleName();
+        $controllerName = Dispatcher::getInstance()->getRequest()->getControllerName();
+        $actionName = Dispatcher::getInstance()->getRequest()->getActionName();
 
         // 当前url
         if ($route == 'curr_url') {
             $route = $moduleName . '/' . $controllerName . '/' . $actionName;
             $route = strtolower($route);
-            $arr = \Yaf_Dispatcher::getInstance()->getRequest()->getParams();
+            $arr = Dispatcher::getInstance()->getRequest()->getParams();
 
             // backend sort 处理
             if (isset($arr['sort'])) {
@@ -186,7 +190,7 @@ class Help
 
         } elseif ($route[0] == '/') {
             // 合并参数
-            $arr = \Yaf_Dispatcher::getInstance()->getRequest()->getParams();
+            $arr = Dispatcher::getInstance()->getRequest()->getParams();
             $params = array_merge($arr, $params);
             if (isset($params['page'])) {
                 unset($params['page']);
@@ -194,7 +198,7 @@ class Help
             }
             $route = $moduleName . '/' . $controllerName . '/' . $actionName;
         }
-        $config = \Yaf_Registry::get('configarr');
+        $config = Registry::get('configarr');
         $url = $config['application']['site']['baseUri'];
         $url = $url . $route;
         $url = rtrim($url, '/');
@@ -204,7 +208,7 @@ class Help
             $url .= '/' . $key . '/' . $value;
         }
 
-        $currModule = \Yaf_Registry::get('currModule');
+        $currModule = Registry::get('currModule');
         if ($currModule == 'm') {
             $url = preg_replace(array('/index\/index$/i', '/\/index$/i'), '', $url);
         } else {
@@ -220,7 +224,7 @@ class Help
      */
     public static function lang($str, $args = array())
     {
-        $lan_arr = Yaf_Registry::get('lang_arr');
+        $lan_arr = Registry::get('lang_arr');
         return vsprintf($lan_arr[$str], $args);
     }
 
@@ -234,7 +238,7 @@ class Help
         if ($value) {
             $value = base64_encode(serialize($value));
         }
-        Yaf_Session::getInstance()->set($key, $value);
+        Session::getInstance()->set($key, $value);
     }
 
     /**
@@ -244,7 +248,7 @@ class Help
      */
     public static function getSession($key, $value = "")
     {
-        $val = Yaf_Session::getInstance()->get($key);
+        $val = Session::getInstance()->get($key);
         if (empty($val))
             $val = $value;
         else {
@@ -259,7 +263,7 @@ class Help
      */
     public static function getSessionID()
     {
-        Yaf_Session::getInstance();// 初始化session
+        Session::getInstance();// 初始化session
         return session_id();
     }
 
@@ -268,7 +272,7 @@ class Help
      */
     public static function setCookie($key, $value, $time)
     {
-        $config = \Yaf_Registry::get('configarr');
+        $config = Registry::get('configarr');
         $pre = $config['application']['cookie']['pre'];
 
         $key = $pre . $key;
@@ -283,7 +287,7 @@ class Help
      */
     public static function getCookie($key, $value = "")
     {
-        $config = \Yaf_Registry::get('configarr');
+        $config = Registry::get('configarr');
         $pre = $config['application']['cookie']['pre'];
 
         $key = $pre . $key;
@@ -408,7 +412,7 @@ class Help
         $subdir2 = date('d');
         $subdir = $dir . '/' . $subdir1 . '/' . $subdir2 . '/';
 
-        $config = \Yaf_Registry::get('configarr');
+        $config = Registry::get('configarr');
         $url = $config['application']['site']['uploadUri'];
         $dir = PUBLIC_PATH . $url . $subdir;
         $dir = str_replace('//', '/', $dir);
@@ -866,7 +870,7 @@ class Help
      */
     public static function sys_get_token($username)
     {
-        $key = Yaf_Registry::get('config')['application']['app']['appkey'];
+        $key = Registry::get('config')['application']['app']['appkey'];
         $time = strtotime(date('Y-m-d'));
         $token = array(
             "username" => $username,
@@ -885,7 +889,7 @@ class Help
         $datetime = intval(self::getp('timestamp'));
         $version = self::getp('version');
         // 获取加密KEY
-        $key = Yaf_Registry::get('config')['application']['app']['appkey'];
+        $key = Registry::get('config')['application']['app']['appkey'];
         $sign = self::getp('sign');
         if (($_SERVER['REQUEST_TIME'] - $datetime) > 3600) {
             self::print_json(-1, 'timeout:  ' . $datetime);
@@ -955,7 +959,7 @@ class Help
     // jwt
     public static function sys_check_token()
     {
-        $key = Yaf_Registry::get('config')['application']['app']['appkey'];
+        $key = Registry::get('config')['application']['app']['appkey'];
         try {
             $decoded = \Firebase\JWT\JWT::decode(self::getp('token'), $key, array('HS256'));
         } catch (Exception $e) {

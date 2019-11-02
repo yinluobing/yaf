@@ -1,4 +1,7 @@
 <?php
+
+use Yaf\Application;
+
 date_default_timezone_set('PRC');
 header('Content-type: text/html; charset=utf-8');
 define('DS', '/');
@@ -12,6 +15,6 @@ define('BASE_URL',"http://localhost:8082/");
 // composer
 require_once BASE_PATH.'vendor/autoload.php';
 
-$application = new Yaf_Application( APPLICATION_PATH . "/conf/application.ini");
+$application = new Application( APPLICATION_PATH . "/conf/application.ini");
 $application->bootstrap()->run();
 

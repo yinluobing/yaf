@@ -1,5 +1,10 @@
 <?php
 
+use Yaf\Application;
+use Yaf\Bootstrap_Abstract;
+use Yaf\Dispatcher;
+use Yaf\Registry;
+
 /**
  * @name Bootstrap
  * @author root
@@ -7,7 +12,7 @@
  * 这些方法, 都接受一个参数:Yaf_Dispatcher $dispatcher
  * 调用的次序, 和申明的次序相同
  */
-class Bootstrap extends Yaf_Bootstrap_Abstract
+class Bootstrap extends Bootstrap_Abstract
 {
 
     private $config;
@@ -15,18 +20,18 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
     public function _initConfig()
     {
         // 把配置保存起来
-        $this->config = Yaf_Application::app()->getConfig();
-        Yaf_Registry::set('config', $this->config);
+        $this->config = Application::app()->getConfig();
+        Registry::set('config', $this->config);
 
         // 调用方法 Yaf_Registry::get('config')->application->upyun->bucketname
         // 关闭自动加载模板
-        Yaf_Dispatcher::getInstance()->autoRender(FALSE);
+        Dispatcher::getInstance()->autoRender(FALSE);
     }
 
     // 是否显示错误提示
     public function _initError()
     {
-        if (Yaf_Registry::get('config')->application->debug) {
+        if (Registry::get('config')->application->debug) {
             error_reporting(7);
         } else {
             error_reporting(0);
@@ -47,7 +52,7 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
             'charset'       => 'utf8mb4'
         ]);
         // 注册db
-        Yaf_Registry::set('db', $db);
+        Registry::set('db', $db);
     }
 
     // 载入redis
@@ -55,31 +60,22 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
     {
         $redis = new \Redis();
         $redis->connect($this->config->application->redis->host, $this->config->application->redis->port);
-        Yaf_Registry::set('redis', $redis);
+        Registry::set('redis', $redis);
     }
 
-    public function _initPlugin(Yaf_Dispatcher $dispatcher)
+    public function _initPlugin(Dispatcher $dispatcher)
     {
         //注册一个插件
     }
 
     /**
-     * @param Yaf_Dispatcher $dispatcher
-     * @throws Yaf_Exception_TypeError
+     * @param Dispatcher $dispatcher
      */
-    public function _initRoute(Yaf_Dispatcher $dispatcher)
+    public function _initRoute(Dispatcher $dispatcher)
     {
         // 注册路由配置项
         $router = $dispatcher->getInstance()->getRouter();
-        $test = new Yaf_Route_Rewrite(
-            'test/',
-            array(
-                'modules'    => 'Index',
-                'controller' => 'Index',
-                'action'     => 'test'
-            )
-        );
-        $router->addRoute('index_route', $test);
+        $router->addConfig($this->config->routes);
     }
 
     /*public function _initView()
