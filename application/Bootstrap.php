@@ -28,6 +28,12 @@ class Bootstrap extends Bootstrap_Abstract
         Dispatcher::getInstance()->autoRender(FALSE);
     }
 
+    public function _initCommon()
+    {
+        // 加载公共函数
+        \Yaf\Loader::import($this->config->application->directory . '/library/Function.php');
+    }
+
     // 是否显示错误提示
     public function _initError()
     {

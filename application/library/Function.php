@@ -1,7 +1,6 @@
 <?php
 
 use Utils\FileUpload;
-use Utils\PHPMailer;
 use Yaf\Dispatcher;
 use Yaf\Registry;
 
@@ -36,14 +35,33 @@ if (!function_exists('sysCheckParam')) {
     /**
      * 检测多个参数是否完整并且不为空值
      * @param $params
+     * @param string $type GET,POST
      */
-    function sysCheckParams($params)
+    function sysCheckParams($params, $method = 'GET')
     {
+        switch ($method) {
+            case 'GET':
+                $method = $_GET;
+                break;
+            case 'POST':
+                $method = $_POST;
+                break;
+        }
         foreach ($params as $param) {
-            if (empty(getp($param))) {
+            if (empty(filter($method[$param]))) {
                 json('101', $param . " 参数不能为空");
             }
         }
+    }
+}
+
+if (!function_exists('lang')) {
+    /**
+     * 获取对应语言的KEY @todo 待重构语言
+     */
+    function lang($key)
+    {
+        return $key;
     }
 }
 
@@ -667,75 +685,77 @@ if (!function_exists('url')) {
         return $url;
     }
 }
-/**
- * 字符串截取
- * @param $string
- * @param $sublen
- * @param int $start
- * @param string $code
- * @return string
- */
-function cutstr($string, $sublen, $start = 0, $code = 'UTF-8')
-{
-    if ($code == 'UTF-8') {
-        $pa = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/";
-        preg_match_all($pa, $string, $t_string);
-        if (count($t_string[0]) - $start > $sublen) return join('', array_slice($t_string[0], $start, $sublen)) . "...";
-        return join('', array_slice($t_string[0], $start, $sublen));
-    } else {
-        $start = $start * 2;
-        $sublen = $sublen * 2;
-        $strlen = strlen($string);
-        $tmpstr = '';
-        for ($i = 0; $i < $strlen; $i++) {
-            if ($i >= $start && $i < ($start + $sublen)) {
-                if (ord(substr($string, $i, 1)) > 129) {
-                    $tmpstr .= substr($string, $i, 2);
-                } else {
-                    $tmpstr .= substr($string, $i, 1);
-                }
-            }
-            if (ord(substr($string, $i, 1)) > 129) $i++;
+if (!function_exists('cutstr')) {
+    /**
+     * 字符串截取
+     * @param $string
+     * @param $sublen
+     * @param int $start
+     * @param string $code
+     * @return string
+     */
+    function cutstr($string, $sublen, $start = 0, $code = 'UTF-8')
+    {
+        return \Utils\Strs::mSubStr($string, $sublen, $start, $code);
+    }
+}
+
+if (!function_exists('dump')) {
+    /**
+     * 浏览器友好的变量输出
+     * @access public
+     * @param  mixed $var 变量
+     * @param  boolean $echo 是否输出(默认为 true，为 false 则返回输出字符串)
+     * @param  string|null $label 标签(默认为空)
+     * @param  integer $flags htmlspecialchars 的标志
+     * @return null|string
+     */
+    function dump($var, $echo = true, $label = null, $flags = ENT_SUBSTITUTE)
+    {
+        $label = (null === $label) ? '' : rtrim($label) . ':';
+        ob_start();
+        var_dump($var);
+        $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', ob_get_clean());
+
+        if (!extension_loaded('xdebug')) {
+            $output = htmlspecialchars($output, $flags);
         }
-        if (strlen($tmpstr) < $strlen) $tmpstr .= "...";
-        return $tmpstr;
+
+        $output = '<pre>' . $label . $output . '</pre>';
+
+        if ($echo) {
+            echo($output);
+            return;
+        }
+
+        return $output;
     }
 }
 
 /**
  * 发送邮件方法
- * @param $toemail
+ * @param $to
  * @param $title
  * @param $content
- * @return bool
- * @throws Yaf_Exception_TypeError
  * @throws Exception
  */
-function sendMail($toemail, $title, $content)
+function sendMail($to, $title, $content)
 {
-    $config = new Yaf_Config_Ini('./conf/application.ini', 'common');
-    $mail = new PHPMailer();
-
-    $mail->CharSet = "utf-8";
-    $mail->Encoding = "base64";
-
-    $mail->IsSMTP(); // set mailer to use SMTP
-    $mail->Host = $config->mail->host; // specify main and backup server
-    $mail->SMTPAuth = true; // turn on SMTP authentication
-    $mail->Username = $config->mail->username; // SMTP username
-    $mail->Password = $config->mail->password; // SMTP password
-
-    $mail->From = $config->mail->from;
-    $mail->FromName = $config->mail->fromname;
-    $mail->AddReplyTo($config->mail->replymail, $config->mail->replyname);    //用户收到邮件点回复时候 回复那一栏自动填写的Email
-
-    $mail->AddAddress($toemail, '');
-
-    $mail->IsHTML(true); // set email format to HTML
-
-    $mail->Subject = $title;
-    $mail->Body = $content;
-    $mail->AltBody = "对不起, 你的邮箱客户端不支持HTML!!";
-    $result = $mail->Send();
+    $config = Registry::get('config');
+    $email = \Utils\Email::instance([
+        'charset'    => $config->mail->charset, // 编码格式
+        'debug'      => $config->mail->debug, // 调式模式
+        'type'       => $config->mail->type,
+        'host'       => $config->mail->host,
+        'port'       => $config->mail->port,
+        'user'       => $config->mail->user,
+        'pass'       => $config->mail->pass,
+        'verifyType' => $config->mail->verifyType,
+        'from'       => $config->mail->from,
+    ]);
+    $email->to($to);
+    $email->subject($title);
+    $email->message($content);
+    $result = $email->send();
     return $result;
 }
