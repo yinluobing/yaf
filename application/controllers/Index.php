@@ -22,9 +22,4 @@ class IndexController extends BaseController
         var_dump($this->getRequest());
         return $this->twig->display('index/index.twig', $this->assign);
     }
-
-    public function testAction()
-    {
-        var_dump($this->getRequest());
-    }
 }

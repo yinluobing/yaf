@@ -15,7 +15,8 @@
     "ext-curl": "*",
     "guzzlehttp/guzzle": "*",
     "firebase/php-jwt": "*",
-    "ext-redis": "*"
+    "ext-redis": "*",
+    "ext-yaf": "*"
   },
   "repositories": {
     "packagist": {

@@ -28,11 +28,21 @@
 
 #### nginx配置
 ````
-# 增加伪静态规则
+# rewrite
 if (!-e $request_filename) {
     rewrite ^/(.*\.(js|ico|gif|jpg|png|css|bmp|html|xls)$) /$1 last;
-    rewrite ^/(.*) /index.php?$1 last;
+    rewrite ^/(.*) /index.php/$1 last;
 }
+
+# php
+location ~ \.php(.*)$ {
+     fastcgi_pass   php72:9000;
+     fastcgi_index  index.php;
+     include        fastcgi_params;
+     fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+     fastcgi_param  PATH_INFO $fastcgi_path_info;
+     fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+ }
 ````
 
 

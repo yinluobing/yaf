@@ -8,14 +8,17 @@
  */
 class ErrorController extends BaseController
 {
-    // 错误信息输出
+    /**
+     * 错误信息输出
+     * @param $exception
+     */
     public function errorAction($exception)
     {
         switch ($exception->getCode()) {
-            case YAF_ERR_NOTFOUND_MODULE:
-            case YAF_ERR_NOTFOUND_CONTROLLER:
-            case YAF_ERR_NOTFOUND_ACTION:
-            case YAF_ERR_NOTFOUND_VIEW:
+            case YAF\ERR\NOTFOUND\MODULE:
+            case YAF\ERR\NOTFOUND\CONTROLLER:
+            case YAF\ERR\NOTFOUND\ACTION:
+            case YAF\ERR\NOTFOUND\VIEW:
                 header('HTTP/1.1 404 Not Found');
                 header("status: 404 Not Found");
                 break;

@@ -13,7 +13,8 @@ class BaseController extends Controller_Abstract
 {
     protected $twig = null;//twig
     protected $db = null;//db
-    protected $assign = null;
+    protected $assign = null;//模板赋值
+    protected $redis = null; //redis
 
     /**
      * init 初始化函数
@@ -32,6 +33,7 @@ class BaseController extends Controller_Abstract
         ];
 
         $this->db = Registry::get('db');
+        $this->redis = Registry::get('redis');
         // SeasLog 日志设置
         // SeasLog::setBasePath('/data/log');
         // SeasLog::setLogger('kaoqin');
