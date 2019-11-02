@@ -1,5 +1,5 @@
 <h1 align="center">Yaf基本封装</h1>
-<h3 align="center">https://github.com/0537wangjin/yaf</h3>
+<h3 align="center">https://github.com/0537icker/yaf</h3>
 <p align="center">QQ：445899710</p>
 
 #### 包含以下内容的使用方法
@@ -22,7 +22,7 @@
 
 #### 安装步骤
 ````
-1. git clone https://github.com/0537wangjin/yaf.git ./
+1. git clone https://github.com/0537icker/yaf.git ./
 2. composer install
 ````
 

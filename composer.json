@@ -1,25 +1,26 @@
 {
-    "name": "0537wangjin/yaf",
-    "description": "yaf",
-    "minimum-stability": "beta",
-    "license": "",
-    "authors": [
-        {
-            "name": "ccjin",
-            "email": "445899710@qq.com"
-        }
-    ],
-    "require": {
-        "twig/twig": "*",
-        "php": "*",
-        "ext-curl": "*",
-        "guzzlehttp/guzzle": "*",
-        "firebase/php-jwt": "*"
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
-        }
+  "name": "0537icker/yaf",
+  "description": "yaf",
+  "minimum-stability": "beta",
+  "license": "",
+  "authors": [
+    {
+      "name": "ccjin",
+      "email": "445899710@qq.com"
     }
+  ],
+  "require": {
+    "twig/twig": "*",
+    "php": "*",
+    "ext-curl": "*",
+    "guzzlehttp/guzzle": "*",
+    "firebase/php-jwt": "*",
+    "ext-redis": "*"
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  }
 }

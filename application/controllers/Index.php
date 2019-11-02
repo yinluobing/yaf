@@ -2,7 +2,7 @@
 
 /**
  * @name IndexController
- * @author wangjin
+ * @author icker
  * @desc 默认控制器
  */
 
@@ -16,9 +16,12 @@ class IndexController extends BaseController
 
     /**
      * 网站首页入口
+     * @throws Yaf_Exception_TypeError
      */
     public function indexAction()
     {
+        echo '<pre/>';
+        var_dump($_SERVER);
         $this->assign['pagetitle'] = 'Yaf_Demo';
         echo $this->twig->render('index/index.twig', $this->assign);
     }
@@ -26,6 +29,6 @@ class IndexController extends BaseController
     public function testAction()
     {
         echo 123;
-        
+
     }
 }
