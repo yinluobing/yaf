@@ -8,6 +8,8 @@ use Yaf\Registry;
  * User: icker
  * Date: 2017/9/4
  * Time: 下午1:53
+ * @property \Medoo\Medoo $db
+ * @property Redis $redis
  */
 class BaseController extends Controller_Abstract
 {
