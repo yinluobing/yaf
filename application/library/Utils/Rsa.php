@@ -1,8 +1,15 @@
 <?php
 
 namespace Utils;
+
 /**
  * RSA签名类
+ * Class Rsa
+ * @package Utils
+ * @author yinluobing <yinluobing@163.com>
+ * @date 2019/11/2
+ * @since 1.0.0
+ * @version 1.0.0
  */
 class Rsa
 {

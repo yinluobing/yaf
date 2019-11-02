@@ -1,12 +1,16 @@
 <?php
 namespace Utils;
 
+/**
+ * Class PHPMailer
+ * @package Utils
+ * @author yinluobing <yinluobing@163.com>
+ * @date 2019/11/2
+ * @since 1.0.0
+ * @version 1.0.0
+ */
 class PHPMailer
 {
-
-    /////////////////////////////////////////////////
-    // PROPERTIES, PUBLIC
-    /////////////////////////////////////////////////
 
     /**
      * Email priority (1 = High, 3 = Normal, 5 = low).

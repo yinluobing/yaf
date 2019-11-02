@@ -1,7 +1,14 @@
 <?php
 namespace Utils;
+
 /**
  * 中文转拼音类
+ * Class Pinyin
+ * @package Utils
+ * @author yinluobing <yinluobing@163.com>
+ * @date 2019/11/2
+ * @since 1.0.0
+ * @version 1.0.0
  */
 class Pinyin
 {
