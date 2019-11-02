@@ -1,10 +1,13 @@
 <?php
 
+namespace Utils;
+
 /**
- *      [CodeJm!] Author CodeJm[codejm@163.com].
- *
- *      文件上传　根据https://github.com/olaferlandsen/FileUpload-for-PHP改写, 源代码有bug
- *      $Id: FileUpload.php 2014-12-16 14:46:04 codejm $
+ * Class FileUpload
+ * @author yinluobing <yinluobing@163.com>
+ * @date 2019/11/2
+ * @since 1.0.0
+ * @version 1.0.0
  */
 class FileUpload
 {
@@ -46,9 +49,9 @@ class FileUpload
 
     // 系统自定义类型
     private $mime_helping = array(
-        'pdf' => array('application/pdf',),
-        'text' => array('text/plain',),
-        'image' => array(
+        'pdf'      => array('application/pdf',),
+        'text'     => array('text/plain',),
+        'image'    => array(
             'image/jpeg',
             'image/jpg',
             'image/pjpeg',
@@ -67,7 +70,7 @@ class FileUpload
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'application/octet-stream'
         ),
-        'video' => array(
+        'video'    => array(
             'video/3gpp',
             'video/3gpp',
             'video/x-msvideo',
@@ -81,7 +84,7 @@ class FileUpload
             'video/x-ms-wmv',
             'video/x-flv',
         ),
-        'audio' => array(
+        'audio'    => array(
             'audio/mp3',
         ),
     );
@@ -90,20 +93,21 @@ class FileUpload
     private $destination_permissions = 0777;
 
     private $returnurl = array();
+
     // 初始化
     public function __construct()
     {
         $this->file = array(
-            'status' => false,    // True: success upload
-            'mime' => '',       // Empty string
-            'filename' => '',       // Empty string
-            'original' => '',       // Empty string
-            'size' => 0,        // 0 Bytes
-            'sizeFormated' => '0B',     // 0 Bytes
-            'destination' => './',     // Default: ./
+            'status'             => false,    // True: success upload
+            'mime'               => '',       // Empty string
+            'filename'           => '',       // Empty string
+            'original'           => '',       // Empty string
+            'size'               => 0,        // 0 Bytes
+            'sizeFormated'       => '0B',     // 0 Bytes
+            'destination'        => './',     // Default: ./
             'allowed_mime_types' => array(),  // Allowed mime types
-            'log' => array(),  // Logs
-            'error' => 0,        // File error
+            'log'                => array(),  // Logs
+            'error'              => 0,        // File error
         );
 
         // Change dir to current dir
@@ -154,19 +158,19 @@ class FileUpload
     // 设置文件允许大小
     public function setMaxFileSize($file_size)
     {
-        $file_size = Help::sizeInBytes($file_size);
+        $file_size = sizeInBytes($file_size);
         if (is_numeric($file_size) && $file_size > -1) {
             // Get php config
-            $size = Help::sizeInBytes(ini_get('upload_max_filesize'));
-            $this->log('PHP settings have set the maximum file upload size to %s(%d)', Help::sizeFormat($size), $size);
+            $size = sizeInBytes(ini_get('upload_max_filesize'));
+            $this->log('PHP settings have set the maximum file upload size to %s(%d)', sizeFormat($size), $size);
 
             // Calculate difference
             if ($size < $file_size) {
-                $this->log('WARNING! The PHP configuration allows a maximum size of %s', Help::sizeFormat($size));
+                $this->log('WARNING! The PHP configuration allows a maximum size of %s', sizeFormat($size));
                 return false;
             }
 
-            $this->log('[INFO]Maximum allowed size set at %s(%d)', Help::sizeFormat($file_size), $file_size);
+            $this->log('[INFO]Maximum allowed size set at %s(%d)', sizeFormat($file_size), $file_size);
 
             $this->max_file_size = $file_size;
             return true;
@@ -351,11 +355,13 @@ class FileUpload
     {
         return (object)$this->file;
     }
+
     // 返回文件url信息
     public function getUrls()
     {
         return $this->returnurl;
     }
+
     // 保存文件
     public function save()
     {
@@ -372,7 +378,7 @@ class FileUpload
                     //'$1',
                     //$this->file_array[$this->input]["name"]
                     //);
-                    $extension = Help::getFileExt($this->file_array[$this->input]['name'][$i]);
+                    $extension = getFileExt($this->file_array[$this->input]['name'][$i]);
                     $this->filename = sha1(mt_rand(1, 9999) . uniqid()) . '.' . $extension;
                     $this->returnurl[] = $this->filename;
                     // set file info
@@ -380,7 +386,7 @@ class FileUpload
                     $this->file['tmp'] = $this->file_array[$this->input]['tmp_name'][$i];
                     $this->file['original'] = $this->file_array[$this->input]['name'][$i];
                     $this->file['size'] = $this->file_array[$this->input]['size'][$i];
-                    $this->file['sizeFormated'] = Help::sizeFormat($this->file['size']);
+                    $this->file['sizeFormated'] = sizeFormat($this->file['size']);
                     $this->file['destination'] = $this->destination_directory . $this->filename;
                     $this->file['filename'] = $this->filename;
                     $this->file['error'] = $this->file_array[$this->input]['error'][$i];
@@ -416,7 +422,7 @@ class FileUpload
                         $this->log('Checking file size');
 
                         if ($this->max_file_size < $this->file["size"]) {
-                            $this->log('The file exceeds the maximum size allowed(Max: %s; File: %s)', Help::sizeFormat($this->max_file_size), Help::sizeFormat($this->file["size"]));
+                            $this->log('The file exceeds the maximum size allowed(Max: %s; File: %s)', sizeFormat($this->max_file_size), sizeFormat($this->file["size"]));
                             return false;
                         }
                     }
@@ -444,7 +450,7 @@ class FileUpload
         }
     }
 
-// 保存单个文件
+    // 保存单个文件
     public function saveSingle()
     {
         if (count($this->file_array) > 0) {
@@ -462,7 +468,7 @@ class FileUpload
                 //'$1',
                 //$this->file_array[$this->input]["name"]
                 //);
-                $extension = Help::getFileExt($this->file_array[$this->input]['name']);
+                $extension = getFileExt($this->file_array[$this->input]['name']);
                 $this->filename = sprintf($this->filename, $extension);
 
                 // set file info
@@ -470,7 +476,7 @@ class FileUpload
                 $this->file['tmp'] = $this->file_array[$this->input]['tmp_name'];
                 $this->file['original'] = $this->file_array[$this->input]['name'];
                 $this->file['size'] = $this->file_array[$this->input]['size'];
-                $this->file['sizeFormated'] = Help::sizeFormat($this->file['size']);
+                $this->file['sizeFormated'] = sizeFormat($this->file['size']);
                 $this->file['destination'] = $this->destination_directory . $this->filename;
                 $this->file['filename'] = $this->filename;
                 $this->file['error'] = $this->file_array[$this->input]['error'];
@@ -506,7 +512,7 @@ class FileUpload
                     $this->log('Checking file size');
 
                     if ($this->max_file_size < $this->file["size"]) {
-                        $this->log('The file exceeds the maximum size allowed(Max: %s; File: %s)', Help::sizeFormat($this->max_file_size), Help::sizeFormat($this->file["size"]));
+                        $this->log('The file exceeds the maximum size allowed(Max: %s; File: %s)', sizeFormat($this->max_file_size), sizeFormat($this->file["size"]));
                         return false;
                     }
                 }

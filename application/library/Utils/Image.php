@@ -1,13 +1,18 @@
 <?php
+namespace Utils;
+
+use Help;
 
 /**
- *      [CodeJm!] Author CodeJm[codejm@163.com].
- *
- *
- *      $Id: self.php 2014-12-19 14:53:53 codejm $
+ * Class Image
+ * @package Utils
+ * @author yinluobing <yinluobing@163.com>
+ * @date 2019/11/2
+ * @since 1.0.0
+ * @version 1.0.0
  */
-
-class ImageManager {
+class Image
+{
     public static $fillWhite = true;
 
     /**
@@ -18,7 +23,8 @@ class ImageManager {
      * @param string $image_type
      * @return bool|string
      */
-    public static function thumbnail($image, $cache_image, $size, $image_type = 'jpg') {
+    public static function thumbnail($image, $cache_image, $size, $image_type = 'jpg')
+    {
         if (!file_exists($image)) {
             return '';
         }
@@ -58,15 +64,16 @@ class ImageManager {
      * @param int $dst_y
      * @return bool
      */
-    public static function cut($src_file, $dst_file, $dst_width = null, $dst_height = null, $file_type = 'jpg', $dst_x = 0, $dst_y = 0) {
+    public static function cut($src_file, $dst_file, $dst_width = null, $dst_height = null, $file_type = 'jpg', $dst_x = 0, $dst_y = 0)
+    {
         if (!file_exists($src_file))
             return false;
 
         // Source information
         $src_info = getimagesize($src_file);
         $src = array(
-            'width' => $src_info[0],
-            'height' => $src_info[1],
+            'width'     => $src_info[0],
+            'height'    => $src_info[1],
             'ressource' => self::create($src_info[2], $src_file),
         );
 
@@ -95,7 +102,8 @@ class ImageManager {
      * @param bool $force_type
      * @return bool
      */
-    public static function resize($src_file, $dst_file, $dst_width = null, $dst_height = null, $file_type = 'jpg', $force_type = false) {
+    public static function resize($src_file, $dst_file, $dst_width = null, $dst_height = null, $file_type = 'jpg', $force_type = false)
+    {
         if (PHP_VERSION_ID < 50300)
             clearstatcache();
         else
@@ -109,13 +117,13 @@ class ImageManager {
             $file_type = 'png';
 
         //两不限
-        if ((int) $dst_width <= 0 && (int) $dst_height <= 0) {
+        if ((int)$dst_width <= 0 && (int)$dst_height <= 0) {
             $dst_width = $src_width;
             $dst_height = $src_height;
-        } elseif ((int) $dst_width > 0 && (int) $dst_height <= 0) {
+        } elseif ((int)$dst_width > 0 && (int)$dst_height <= 0) {
             //限宽
             $dst_height = round($src_height * ($dst_width / $src_width));
-        } elseif ((int) $dst_width <= 0 && (int) $dst_height > 0) {
+        } elseif ((int)$dst_width <= 0 && (int)$dst_height > 0) {
             //限高
             $dst_width = round($src_width * ($dst_height / $src_height));
         }
@@ -167,11 +175,12 @@ class ImageManager {
      * @param $image
      * @return bool
      */
-    public static function checkImageMemoryLimit($image) {
+    public static function checkImageMemoryLimit($image)
+    {
         $infos = @getimagesize($image);
 
         $memory_limit = Help::getMemoryLimit();
-        if (function_exists('memory_get_usage') && (int) $memory_limit != -1) {
+        if (function_exists('memory_get_usage') && (int)$memory_limit != -1) {
             $current_memory = memory_get_usage();
             $channel = isset($infos['channels']) ? ($infos['channels'] / 8) : 1;
             if (($infos[0] * $infos[1] * $infos['bits'] * $channel + pow(2, 16)) * 1.8 + $current_memory > $memory_limit - 1024 * 1024) {
@@ -186,7 +195,8 @@ class ImageManager {
      * @param $filename
      * @return bool
      */
-    public static function isCorrectImageFileExt($filename) {
+    public static function isCorrectImageFileExt($filename)
+    {
         $authorized_extensions = array('gif', 'jpg', 'jpeg', 'png', 'bmp');
         if (strpos($filename, '.') !== false) {
             $name_explode = explode('.', $filename);
@@ -210,28 +220,30 @@ class ImageManager {
      * @param $type
      * @param $resource
      * @param $filename
+     * @param int $quality
      * @return bool
      */
-    public static function write($type, $resource, $filename, $quality=100) {
+    public static function write($type, $resource, $filename, $quality = 100)
+    {
         switch ($type) {
-        case 'gif':
-        case IMAGETYPE_GIF:
-            $success = imagegif($resource, $filename);
-            break;
-        case 'png':
-        case IMAGETYPE_PNG:
-            $success = imagepng($resource, $filename);
-            break;
-        case 'bmp':
-        case IMAGETYPE_BMP:
-            $success = imagewbmp($resource,$filename);
-            break;
-        case 'jpg':
-        case 'jpeg':
-        case IMAGETYPE_JPEG:
-        default:
-            $success = imagejpeg($resource, $filename, $quality);
-            break;
+            case 'gif':
+            case IMAGETYPE_GIF:
+                $success = imagegif($resource, $filename);
+                break;
+            case 'png':
+            case IMAGETYPE_PNG:
+                $success = imagepng($resource, $filename);
+                break;
+            case 'bmp':
+            case IMAGETYPE_BMP:
+                $success = imagewbmp($resource, $filename);
+                break;
+            case 'jpg':
+            case 'jpeg':
+            case IMAGETYPE_JPEG:
+            default:
+                $success = imagejpeg($resource, $filename, $quality);
+                break;
         }
         @chmod($filename, 0664);
         return $success;
@@ -239,112 +251,118 @@ class ImageManager {
 
     /**
      * 切成正方形
-     *
+     * @param $src_file
+     * @param $dest_file
+     * @param $dest_type
+     * @param int $limit_min
+     * @param int $limit_max
+     * @return bool|resource
      */
-    public static function squre($src_file, $dest_file, $dest_type, $limit_min=400, $limit_max=800){
+    public static function squre($src_file, $dest_file, $dest_type, $limit_min = 400, $limit_max = 800)
+    {
         $tmp = tempnam(Help::sys_get_temp_dir(), 'img_');
-        if(Help::saveFile($src_file,$tmp)){
+        if (Help::saveFile($src_file, $tmp)) {
             list($src_width, $src_height, $type) = @getimagesize($tmp);
-            if($src_width && $src_height && $type){
-                $image=array('width'=>$src_width,'height'=>$src_height,'type'=>$type);
+            if ($src_width && $src_height && $type) {
+                $image = array('width' => $src_width, 'height' => $src_height, 'type' => $type);
 
-                switch($type){
-                case IMAGETYPE_PNG:
-                    $image['image']=@imagecreatefrompng($tmp);
-                    break;
-                case IMAGETYPE_JPEG:
-                    $image['image']=@imagecreatefromjpeg($tmp);
-                    break;
-                case IMAGETYPE_BMP:
-                    $image['image']=@imagecreatefromwbmp($tmp);
-                    break;
-                case IMAGETYPE_GIF:
-                    $image['image']=@imagecreatefromgif($tmp);
-                    break;
-                default:
-                    $image['image']=false;
-                    break;
+                switch ($type) {
+                    case IMAGETYPE_PNG:
+                        $image['image'] = @imagecreatefrompng($tmp);
+                        break;
+                    case IMAGETYPE_JPEG:
+                        $image['image'] = @imagecreatefromjpeg($tmp);
+                        break;
+                    case IMAGETYPE_BMP:
+                        $image['image'] = @imagecreatefromwbmp($tmp);
+                        break;
+                    case IMAGETYPE_GIF:
+                        $image['image'] = @imagecreatefromgif($tmp);
+                        break;
+                    default:
+                        $image['image'] = false;
+                        break;
                 }
-                if($image['image']){
-                    if($image['width']>$image['height']){
+                if ($image['image']) {
+                    if ($image['width'] > $image['height']) {
                         //宽图
-                        if($image['width']>$limit_max){
+                        if ($image['width'] > $limit_max) {
                             //缩
-                            $image['dest_width']=$limit_max;
-                            $image['dest_height']=$limit_max;
-                            $image['res_width']=$limit_max;
-                            $image['res_height']=round($image['height']*$image['dest_width']/$image['width']);
-                            $image['start_x']=0;
-                            $image['start_y']=round(($image['dest_height']-$image['res_height'])/2);
-                        } elseif($image['width']<$limit_min){
+                            $image['dest_width'] = $limit_max;
+                            $image['dest_height'] = $limit_max;
+                            $image['res_width'] = $limit_max;
+                            $image['res_height'] = round($image['height'] * $image['dest_width'] / $image['width']);
+                            $image['start_x'] = 0;
+                            $image['start_y'] = round(($image['dest_height'] - $image['res_height']) / 2);
+                        } elseif ($image['width'] < $limit_min) {
                             //放
-                            $image['dest_width']=$limit_min;
-                            $image['dest_height']=$limit_min;
-                            $image['res_width']=$limit_min;
-                            $image['res_height']=round($image['height']*$image['dest_width']/$image['width']);
-                            $image['start_x']=0;
-                            $image['start_y']=round(($image['dest_height']-$image['res_height'])/2);
-                        } else{
-                            $image['dest_width']=$image['width'];
-                            $image['dest_height']=$image['width'];
-                            $image['res_width']=$image['width'];
-                            $image['res_height']=$image['height'];
-                            $image['start_x']=0;
-                            $image['start_y']=round(($image['dest_height']-$image['res_height'])/2);
+                            $image['dest_width'] = $limit_min;
+                            $image['dest_height'] = $limit_min;
+                            $image['res_width'] = $limit_min;
+                            $image['res_height'] = round($image['height'] * $image['dest_width'] / $image['width']);
+                            $image['start_x'] = 0;
+                            $image['start_y'] = round(($image['dest_height'] - $image['res_height']) / 2);
+                        } else {
+                            $image['dest_width'] = $image['width'];
+                            $image['dest_height'] = $image['width'];
+                            $image['res_width'] = $image['width'];
+                            $image['res_height'] = $image['height'];
+                            $image['start_x'] = 0;
+                            $image['start_y'] = round(($image['dest_height'] - $image['res_height']) / 2);
                         }
-                    } elseif($image['width']<$image['height']){
+                    } elseif ($image['width'] < $image['height']) {
                         //长图
-                        if($image['height']>$limit_max){
+                        if ($image['height'] > $limit_max) {
                             //缩
-                            $image['dest_width']=$limit_max;
-                            $image['dest_height']=$limit_max;
-                            $image['res_width']=round($image['width']*$image['dest_width']/$image['height']);
-                            $image['res_height']=$limit_max;
-                            $image['start_x']=round(($image['dest_width']-$image['res_width'])/2);
-                            $image['start_y']=0;
-                        } elseif($image['height']<$limit_min){
+                            $image['dest_width'] = $limit_max;
+                            $image['dest_height'] = $limit_max;
+                            $image['res_width'] = round($image['width'] * $image['dest_width'] / $image['height']);
+                            $image['res_height'] = $limit_max;
+                            $image['start_x'] = round(($image['dest_width'] - $image['res_width']) / 2);
+                            $image['start_y'] = 0;
+                        } elseif ($image['height'] < $limit_min) {
                             //放
-                            $image['dest_width']=$limit_min;
-                            $image['dest_height']=$limit_min;
-                            $image['res_width']=round($image['width']*$image['dest_width']/$image['height']);
-                            $image['res_height']=$limit_min;
-                            $image['start_x']=round(($image['dest_width']-$image['res_width'])/2);
-                            $image['start_y']=0;
-                        } else{
-                            $image['dest_width']=$image['height'];
-                            $image['dest_height']=$image['height'];
-                            $image['res_width']=$image['width'];
-                            $image['res_height']=$image['height'];
-                            $image['start_x']=round(($image['dest_width']-$image['res_width'])/2);
-                            $image['start_y']=0;
+                            $image['dest_width'] = $limit_min;
+                            $image['dest_height'] = $limit_min;
+                            $image['res_width'] = round($image['width'] * $image['dest_width'] / $image['height']);
+                            $image['res_height'] = $limit_min;
+                            $image['start_x'] = round(($image['dest_width'] - $image['res_width']) / 2);
+                            $image['start_y'] = 0;
+                        } else {
+                            $image['dest_width'] = $image['height'];
+                            $image['dest_height'] = $image['height'];
+                            $image['res_width'] = $image['width'];
+                            $image['res_height'] = $image['height'];
+                            $image['start_x'] = round(($image['dest_width'] - $image['res_width']) / 2);
+                            $image['start_y'] = 0;
                         }
-                    } else{
-                        if($image['width']>$limit_max){
-                            $image['dest_width']=$limit_max;
-                            $image['dest_height']=$limit_max;
-                            $image['res_width']=$limit_max;
-                            $image['res_height']=$limit_max;
-                            $image['start_x']=0;
-                            $image['start_y']=0;
-                        } elseif($image['width']<$limit_min){
-                            $image['dest_width']=$limit_min;
-                            $image['dest_height']=$limit_min;
-                            $image['res_width']=$limit_min;
-                            $image['res_height']=$limit_min;
-                            $image['start_x']=0;
-                            $image['start_y']=0;
-                        } else{
-                            if($dest_file && $dest_type)
-                                return self::write($dest_type,$image['image'],$dest_file);
+                    } else {
+                        if ($image['width'] > $limit_max) {
+                            $image['dest_width'] = $limit_max;
+                            $image['dest_height'] = $limit_max;
+                            $image['res_width'] = $limit_max;
+                            $image['res_height'] = $limit_max;
+                            $image['start_x'] = 0;
+                            $image['start_y'] = 0;
+                        } elseif ($image['width'] < $limit_min) {
+                            $image['dest_width'] = $limit_min;
+                            $image['dest_height'] = $limit_min;
+                            $image['res_width'] = $limit_min;
+                            $image['res_height'] = $limit_min;
+                            $image['start_x'] = 0;
+                            $image['start_y'] = 0;
+                        } else {
+                            if ($dest_file && $dest_type)
+                                return self::write($dest_type, $image['image'], $dest_file);
                             else
                                 return $image['image'];
                         }
                     }
-                    $canvas=self::createWhiteImage($image['dest_width'],$image['dest_height']);
-                    if(@imagecopyresampled($canvas,$image['image'],$image['start_x'],$image['start_y'],0,0,$image['res_width'],$image['res_height'],$image['width'],$image['height'])){
+                    $canvas = self::createWhiteImage($image['dest_width'], $image['dest_height']);
+                    if (@imagecopyresampled($canvas, $image['image'], $image['start_x'], $image['start_y'], 0, 0, $image['res_width'], $image['res_height'], $image['width'], $image['height'])) {
                         imagedestroy($image['image']);
-                        if($dest_file && $dest_type)
-                            if(self::write($dest_type,$canvas,$dest_file)){
+                        if ($dest_file && $dest_type)
+                            if (self::write($dest_type, $canvas, $dest_file)) {
                                 imagedestroy($canvas);
                                 return true;
                             } else
@@ -364,7 +382,8 @@ class ImageManager {
      * @param null $mime_type_list
      * @return bool
      */
-    public static function isRealImage($filename, $file_mime_type = null, $mime_type_list = null) {
+    public static function isRealImage($filename, $file_mime_type = null, $mime_type_list = null)
+    {
         // Detect mime content type
         $mime_type = false;
         if (!$mime_type_list)
@@ -403,8 +422,9 @@ class ImageManager {
      * @param int $max_file_size
      * @return bool|string
      */
-    public static function validateUpload($file, $max_file_size = 0) {
-        if ((int) $max_file_size > 0 && $file['size'] > (int) $max_file_size)
+    public static function validateUpload($file, $max_file_size = 0)
+    {
+        if ((int)$max_file_size > 0 && $file['size'] > (int)$max_file_size)
             return sprintf(Help::displayError('Image is too large (%1$d kB). Maximum allowed: %2$d kB'), $file['size'] / 1024, $max_file_size / 1024);
         if (!self::isRealImage($file['tmp_name'], $file['type']) || !self::isCorrectImageFileExt($file['name']))
             return 'Image format not recognized, allowed formats are: .gif, .jpg, .png';
@@ -419,15 +439,16 @@ class ImageManager {
      * @param $filename
      * @return resource
      */
-    public static function create($type, $filename) {
+    public static function create($type, $filename)
+    {
         switch ($type) {
-        case IMAGETYPE_GIF :
-            return imagecreatefromgif($filename);
-        case IMAGETYPE_PNG :
-            return imagecreatefrompng($filename);
-        case IMAGETYPE_JPEG :
-        default:
-            return imagecreatefromjpeg($filename);
+            case IMAGETYPE_GIF :
+                return imagecreatefromgif($filename);
+            case IMAGETYPE_PNG :
+                return imagecreatefrompng($filename);
+            case IMAGETYPE_JPEG :
+            default:
+                return imagecreatefromjpeg($filename);
         }
     }
 
@@ -437,8 +458,9 @@ class ImageManager {
      * @param $height
      * @return resource
      */
-    public static function createWhiteImage($width, $height) {
-        if(self::$fillWhite){
+    public static function createWhiteImage($width, $height)
+    {
+        if (self::$fillWhite) {
             // 白色
             $image = imagecreatetruecolor($width, $height);
             $white = imagecolorallocate($image, 255, 255, 255);
@@ -448,7 +470,7 @@ class ImageManager {
             $image = imagecreatetruecolor($width, $height);
             $white = imagecolorallocate($image, 255, 255, 255);
             imagefill($image, 0, 0, $white);
-            imagecolortransparent($image,$white);
+            imagecolortransparent($image, $white);
         }
         return $image;
     }
@@ -458,12 +480,13 @@ class ImageManager {
      * @param $file_name
      * @return int|null|string
      */
-    public static function getMimeTypeByExtension($file_name) {
-        $types = array(
-            'image/gif' => array('gif'),
-            'image/jpeg' => array('jpg', 'jpeg'),
-            'image/png' => array('png')
-        );
+    public static function getMimeTypeByExtension($file_name)
+    {
+        $types = [
+            'image/gif'  => ['gif'],
+            'image/jpeg' => ['jpg', 'jpeg'],
+            'image/png'  => ['png']
+        ];
         $extension = substr($file_name, strrpos($file_name, '.') + 1);
 
         $mime_type = null;
@@ -481,4 +504,4 @@ class ImageManager {
 
 }
 
-?>
+

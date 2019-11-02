@@ -34,8 +34,5 @@ class BaseController extends Controller_Abstract
 
         $this->db = Registry::get('db');
         $this->redis = Registry::get('redis');
-        // SeasLog 日志设置
-        // SeasLog::setBasePath('/data/log');
-        // SeasLog::setLogger('kaoqin');
     }
 }

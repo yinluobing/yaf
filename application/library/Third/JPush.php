@@ -1,5 +1,5 @@
 <?php
-
+namespace Third;
 /**
  * Created by PhpStorm.
  * User: icker

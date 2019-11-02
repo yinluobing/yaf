@@ -4,17 +4,15 @@ use Yaf\Dispatcher;
 use Yaf\Registry;
 use Yaf\Session;
 
-/**
- *      [CodeJm!] Author CodeJm[codejm@163.com].
- *
- *
- *      $Id: Tools_help.php 2014-07-29 17:24:01 codejm $
- */
 class Help
 {
 
     /**
      * 使用反斜线引用数据 防注入 前端xss过滤 (使用pdo, 省略addslashes过滤)
+     * @param $string
+     * @param int $force
+     * @param string $allow
+     * @return array|string
      */
     public static function filter($string, $force = 1, $allow = '')
     {
@@ -33,8 +31,9 @@ class Help
 
     /**
      * 移除HTML中的危险代码，如iframe和script
-     * @param $val
-     * @return unknown_type
+     * @param string $content
+     * @param string $allow
+     * @return string
      */
     public static function remove_xss($content, $allow = '')
     {
@@ -61,6 +60,9 @@ class Help
 
     /**
      * 获取GET数据 help::getg("name");
+     * @param $p
+     * @param string $t
+     * @return array|string
      */
     public static function getg($p, $t = "")
     {
@@ -69,6 +71,9 @@ class Help
 
     /**
      * 获取POST数据 help::getp("name");
+     * @param $p
+     * @param string $t
+     * @return array|string
      */
     public static function getp($p, $t = "")
     {
@@ -77,7 +82,8 @@ class Help
 
     /**
      * 获取完整上传地址
-     *
+     * @param string $url
+     * @return string
      */
     public static function fbu($url = '')
     {
@@ -100,7 +106,8 @@ class Help
 
     /**
      * 获取完整系统地址
-     *
+     * @param string $url
+     * @return string
      */
     public static function sfbu($url = '')
     {
@@ -111,9 +118,9 @@ class Help
 
     /**
      * url 生成
+     *
      * @param string $route 路由
      * @param array $param 参数数组
-     *
      * @return string $url
      */
     public static function url($route, $params = array())
@@ -220,7 +227,7 @@ class Help
     /**
      * 获取当前语言获取字符串对应的语言
      * @param string 字符串
-     * @return 对应字符串
+     * @return string 对应字符串
      */
     public static function lang($str, $args = array())
     {
@@ -244,6 +251,7 @@ class Help
     /**
      * 获取Session值
      * @param mixed $key Usually a string, right ?
+     * @param string $value
      * @return mixed
      */
     public static function getSession($key, $value = "")
@@ -269,6 +277,9 @@ class Help
 
     /**
      * 获取cookie数据 getcookie($p);
+     * @param $key
+     * @param $value
+     * @param $time
      */
     public static function setCookie($key, $value, $time)
     {
@@ -284,6 +295,9 @@ class Help
 
     /**
      * 获取cookie数据 getcookie($p);
+     * @param $key
+     * @param string $value
+     * @return mixed|string
      */
     public static function getCookie($key, $value = "")
     {
@@ -301,7 +315,8 @@ class Help
 
     /**
      * 加密方式
-     *
+     * @param $password
+     * @return string
      */
     public static function hash($password)
     {
@@ -310,7 +325,8 @@ class Help
 
     /**
      * 字段输出
-     *
+     * @param $array
+     * @return string
      */
     public static function arraytofields($array)
     {
@@ -402,6 +418,12 @@ class Help
 
     /**
      * 多图上传
+     * @param $input
+     * @param $dir
+     * @param string $return
+     * @param string $type
+     * @param string $size
+     * @return array|bool
      */
     public static function uploads($input, $dir, $return = "url", $type = "image", $size = "10M")
     {
@@ -620,9 +642,13 @@ class Help
     /**
      *  curl方式post数据  $arr数组用来设置要post的字段和数值 help::getpost("http://www.123.com",$array);
      *  $array = array('name'=>'good','pass'=>'wrong');
-     *
+     * @param $URL
+     * @param $arr
+     * @param int $build
+     * @param bool $header
+     * @return mixed
      */
-    public static function getpost($URL, $arr, $build = 1, $header = false)
+    public static function httppost($URL, $arr, $build = 1, $header = false)
     {
         if ($build)
             $arr = http_build_query($arr);
@@ -643,9 +669,10 @@ class Help
 
     /**
      * curl 方式 get数据 help::getget('http://www.123.com')
-     *
+     * @param $url
+     * @return mixed
      */
-    public static function getget($url)
+    public static function httpget($url)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -659,7 +686,8 @@ class Help
 
     /**
      * 获取文件扩展名
-     *
+     * @param $filename
+     * @return string
      */
     public static function getFileExt($filename)
     {
@@ -668,6 +696,9 @@ class Help
 
     /**
      * 人性化文件大小单位
+     * @param $size
+     * @param int $precision
+     * @return string
      */
     public static function sizeFormat($size, $precision = 2)
     {
@@ -678,6 +709,8 @@ class Help
 
     /**
      * 将人性化的文件大小转换成byte
+     * @param $size
+     * @return float|int
      */
     public static function sizeInBytes($size)
     {
@@ -727,7 +760,8 @@ class Help
 
     /**
      * 根据参数获取当前时间戳
-     *
+     * @param string $date
+     * @return false|int
      */
     public static function htime($date = '')
     {
@@ -754,7 +788,9 @@ class Help
 
     /**
      * 主键为key
-     *
+     * @param $result
+     * @param string $key
+     * @return array
      */
     static function formatkey($result, $key = '')
     {
@@ -772,7 +808,8 @@ class Help
 
     /***
      * 清除html
-     *
+     * @param $str
+     * @return mixed|null|string|string[]
      */
     public static function clearHTML($str)
     {
@@ -804,6 +841,10 @@ class Help
         }
     }
 
+    /**
+     * @param $time
+     * @return false|string
+     */
     public static function formatTime($time)
     {
         $rtime = date('Y/m/d H:i', $time);
@@ -864,8 +905,7 @@ class Help
 
     /**
      * 根据client_id来生成并返回token
-     * @param $client_id
-     * @param $nickname
+     * @param $username
      * @return string
      */
     public static function sys_get_token($username)
@@ -874,8 +914,8 @@ class Help
         $time = strtotime(date('Y-m-d'));
         $token = array(
             "username" => $username,
-            "iat" => $time,
-            "nbf" => $time
+            "iat"      => $time,
+            "nbf"      => $time
         );
         $jwt = \Firebase\JWT\JWT::encode($token, $key);
         return $jwt;
@@ -892,66 +932,42 @@ class Help
         $key = Registry::get('config')['application']['app']['appkey'];
         $sign = self::getp('sign');
         if (($_SERVER['REQUEST_TIME'] - $datetime) > 3600) {
-            self::print_json(-1, 'timeout:  ' . $datetime);
+            self::json(-1, 'timeout:  ' . $datetime);
         }
         $path = $key . '|' . self::getRoute($_SERVER["REQUEST_URI"]) . '|' . $datetime . '|' . $version;
         $signValue = md5($path);
         if ($signValue != $sign) {
-            self::print_json(-1, '签名错误' . $path);
+            self::json(-1, '签名错误' . $path);
         }
     }
 
     /**
      * app接口返回json
+     * @param $code
+     * @param $data
      */
-    public static function print_json($errcode, $data, $id = 0)
+    public static function json($code, $data)
     {
         header('Content-type: application/json');
         $json = array();
-        $json['errcode'] = intval($errcode);
+        $json['code'] = intval($code);
         if (is_array($data)) {
             $json['data'] = $data;
         } else {
-            $json['errmsg'] = $data;
-        }
-        if ($id > 0) {
-            $json['id'] = $id;
+            $json['msg'] = $data;
         }
         die(json_encode($json));
     }
 
     /**
-     * 检测多个post参数是否完整并且不为空值
-     * @param $post_array
-     * @param int $type [0:json输出, 1:die输出]
+     * 检测多个参数是否完整并且不为空值
+     * @param $params
      */
-    public static function sys_check_post($post_array, $type = 0)
+    public static function sysCheckParam($params)
     {
-        foreach ($post_array as $parm) {
-            if (empty(self::getp($parm))) {
-                if ($type) {
-                    self::print_json('101', $parm . " 参数不能为空");
-                } else {
-                    self::print_json('101', $parm . " 参数不能为空");
-                }
-            }
-        }
-    }
-
-    /**
-     * 检测多个post参数是否完整并且不为空值
-     * @param $post_array
-     * @param int $type [0:json输出, 1:die输出]
-     */
-    public static function sys_check_get($post_array, $type = 1)
-    {
-        foreach ($post_array as $parm) {
-            if (empty(self::getg($parm))) {
-                if ($type) {
-                    self::print_json('101', $parm . " 参数不能为空");
-                } else {
-                    self::print_json('101', $parm . " 参数不能为空");
-                }
+        foreach ($params as $param) {
+            if (empty(self::getp($param))) {
+                self::json('101', $param . " 参数不能为空");
             }
         }
     }
@@ -963,14 +979,15 @@ class Help
         try {
             $decoded = \Firebase\JWT\JWT::decode(self::getp('token'), $key, array('HS256'));
         } catch (Exception $e) {
-            self::print_json(101, $e->getMessage());
+            self::json(101, $e->getMessage());
         }
         return $decoded;
     }
 
     /**
      * 生成随机字符串
-     * @param $length 长度
+     * @param int $len
+     * @param string $format
      * @return string
      */
     public static function randStr($len = 8, $format = 'ALL')
@@ -1010,11 +1027,10 @@ class Help
 
     /**
      * 根据中心点经纬度，来计算以radius千米为距离半径，所画圆圈的正切正方形的四个点坐标
-     *
-     *param lng float 经度
-     *param lat float 纬度
-     *param radius float 该点所在圆的半径，默认值为10 千米
-     *return array 正方形的四个点的经纬度坐标
+     * @param float $lng 经度
+     * @param float $lat 纬度
+     * @param int $radius 该点所在圆的半径，默认值为10 千米
+     * @return array 正方形的四个点的经纬度坐标
      */
     public static function squarePoint($lng, $lat, $radius = 10)
     {
@@ -1027,9 +1043,9 @@ class Help
         $dlat = rad2deg($dlat);
 
         return array(
-            'left-top' => array('lat' => $lat + $dlat, 'lng' => $lng - $dlng),
-            'right-top' => array('lat' => $lat + $dlat, 'lng' => $lng + $dlng),
-            'left-bottom' => array('lat' => $lat - $dlat, 'lng' => $lng - $dlng),
+            'left-top'     => array('lat' => $lat + $dlat, 'lng' => $lng - $dlng),
+            'right-top'    => array('lat' => $lat + $dlat, 'lng' => $lng + $dlng),
+            'left-bottom'  => array('lat' => $lat - $dlat, 'lng' => $lng - $dlng),
             'right-bottom' => array('lat' => $lat - $dlat, 'lng' => $lng + $dlng)
         );
     }
@@ -1065,6 +1081,11 @@ class Help
         }
     }
 
+    /**
+     * utf8转unicode字符串
+     * @param $utf8
+     * @return string
+     */
     public static function utf8_to_unicode_str($utf8)
     {
         $return = '';

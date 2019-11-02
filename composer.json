@@ -16,7 +16,14 @@
     "guzzlehttp/guzzle": "*",
     "firebase/php-jwt": "*",
     "ext-redis": "*",
-    "ext-yaf": "*"
+    "ext-yaf": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-pdo": "*",
+    "ext-iconv": "*",
+    "ext-gd": "*",
+    "ext-fileinfo": "*",
+    "ext-openssl": "*"
   },
   "repositories": {
     "packagist": {
