@@ -1,6 +1,5 @@
 <?php
 
-use Utils\FileUpload;
 use Yaf\Dispatcher;
 use Yaf\Registry;
 
@@ -263,7 +262,7 @@ if (!function_exists('upload')) {
         $url = '';
         $dir = PUBLIC_PATH . $url . $subdir;
         $dir = str_replace('//', '/', $dir);
-        $fileUpload = new FileUpload();
+        $fileUpload = new Utils\FileUpload();
         $fileUpload->setInput($input);
         $fileUpload->setDestinationDirectory($dir, true);
         $fileUpload->setAllowMimeType($type);
@@ -305,7 +304,7 @@ if (!function_exists('uploads')) {
         $dir = str_replace('//', '/', $dir);
 
 
-        $fileUpload = new FileUpload();
+        $fileUpload = new Utils\FileUpload();
         $fileUpload->setInput($input);
         $fileUpload->setDestinationDirectory($dir, true);
         $fileUpload->setAllowMimeType($type);
