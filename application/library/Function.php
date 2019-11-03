@@ -6,19 +6,18 @@ use Yaf\Registry;
 if (!function_exists('json')) {
     /**
      * app接口返回json
-     * @param $code
-     * @param $data
+     * @param int $code
+     * @param null $msg
+     * @param array $data
      */
-    function json($code, $data)
+    function json($code = 1, $msg = null, $data = [])
     {
         header('Content-type: application/json');
-        $json = [];
-        $json['code'] = intval($code);
-        if (is_array($data)) {
-            $json['data'] = $data;
-        } else {
-            $json['msg'] = $data;
-        }
+        $json = [
+            'code' => intval($code),
+            'msg'  => $msg ? $msg : '操作成功',
+            'data' => $data
+        ];
         die(json_encode($json));
     }
 
@@ -731,7 +730,7 @@ if (!function_exists('dump')) {
     }
 }
 
-if (!function_exists('sendMail')){
+if (!function_exists('sendMail')) {
     /**
      * 发送邮件方法
      * @param $to
