@@ -20,8 +20,8 @@ if (!function_exists('json')) {
         ];
         die(json_encode($json));
     }
-
 }
+
 if (!function_exists('validateSign')) {
     function validateSign()
     {
@@ -599,8 +599,8 @@ if (!function_exists('url')) {
                 $url = $currRoute->assemble($params, array());
             }
             if ($url) {
-                $config = Registry::get('configarr');
-                $url = $config['application']['site']['baseUri'] . $url;
+                $config = Registry::get('config');
+                $url = $config['application']['site']['domain'] . $url;
                 $params_other = array();
                 foreach ($params as $key => $value) {
                     if ($value === 0 || $key == 'page')
@@ -664,8 +664,8 @@ if (!function_exists('url')) {
             }
             $route = $moduleName . '/' . $controllerName . '/' . $actionName;
         }
-        $config = Registry::get('configarr');
-        $url = $config['application']['site']['baseUri'];
+        $config = Registry::get('config');
+        $url = $config['application']['site']['domain'];
         $url = $url . $route;
         $url = rtrim($url, '/');
         foreach ($params as $key => $value) {
