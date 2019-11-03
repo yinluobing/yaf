@@ -30,13 +30,13 @@ if (!function_exists('validateSign')) {
     }
 }
 
-if (!function_exists('sysCheckParam')) {
+if (!function_exists('checkParams')) {
     /**
      * 检测多个参数是否完整并且不为空值
      * @param $params
      * @param string $type GET,POST
      */
-    function sysCheckParams($params, $method = 'GET')
+    function checkParams($params, $method = 'GET')
     {
         switch ($method) {
             case 'GET':
@@ -724,37 +724,39 @@ if (!function_exists('dump')) {
 
         if ($echo) {
             echo($output);
-            return;
+            return null;
         }
 
         return $output;
     }
 }
 
-/**
- * 发送邮件方法
- * @param $to
- * @param $title
- * @param $content
- * @throws Exception
- */
-function sendMail($to, $title, $content)
-{
-    $config = Registry::get('config');
-    $email = \Utils\Email::instance([
-        'charset'    => $config->mail->charset, // 编码格式
-        'debug'      => $config->mail->debug, // 调式模式
-        'type'       => $config->mail->type,
-        'host'       => $config->mail->host,
-        'port'       => $config->mail->port,
-        'user'       => $config->mail->user,
-        'pass'       => $config->mail->pass,
-        'verifyType' => $config->mail->verifyType,
-        'from'       => $config->mail->from,
-    ]);
-    $email->to($to);
-    $email->subject($title);
-    $email->message($content);
-    $result = $email->send();
-    return $result;
+if (!function_exists('sendMail')){
+    /**
+     * 发送邮件方法
+     * @param $to
+     * @param $title
+     * @param $content
+     * @throws Exception
+     */
+    function sendMail($to, $title, $content)
+    {
+        $config = Registry::get('config');
+        $email = \Utils\Email::instance([
+            'charset'    => $config->mail->charset, // 编码格式
+            'debug'      => $config->mail->debug, // 调式模式
+            'type'       => $config->mail->type,
+            'host'       => $config->mail->host,
+            'port'       => $config->mail->port,
+            'user'       => $config->mail->user,
+            'pass'       => $config->mail->pass,
+            'verifyType' => $config->mail->verifyType,
+            'from'       => $config->mail->from,
+        ]);
+        $email->to($to);
+        $email->subject($title);
+        $email->message($content);
+        $result = $email->send();
+        return $result;
+    }
 }
