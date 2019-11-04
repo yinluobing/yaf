@@ -12,22 +12,18 @@ class runPlugin extends Yaf\Plugin_Abstract
     public function routerStartup(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
     {
         // 记录日志 @todo 记录请求日志
-        echo 'routerStartup';
     }
 
     public function routerShutdown(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
     {
-        echo 'routerShutdown';
     }
 
     public function dispatchLoopStartup(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
     {
-        echo 'dispatchLoopStartup';
     }
 
     public function preDispatch(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
     {
-        echo 'preDispatch';
     }
 
     public function postDispatch(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
