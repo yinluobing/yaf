@@ -72,6 +72,7 @@ class Bootstrap extends Bootstrap_Abstract
     public function _initPlugin(Dispatcher $dispatcher)
     {
         //注册一个插件
+        $dispatcher->registerPlugin(new runPlugin());
     }
 
     /**
@@ -84,8 +85,9 @@ class Bootstrap extends Bootstrap_Abstract
         $router->addConfig($this->config->routes);
     }
 
-    /*public function _initView()
+/*    public function _initView()
     {
         //在这里注册自己的view控制器，例如smarty,twig
+        echo '_initView';
     }*/
 }
