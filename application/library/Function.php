@@ -23,9 +23,42 @@ if (!function_exists('json')) {
 }
 
 if (!function_exists('validateSign')) {
+    /**
+     * 签名验证 @todo 待重构
+     */
     function validateSign()
     {
 
+    }
+}
+
+if (!function_exists('writeLog')) {
+    /**
+     * 写入日志操作 @todo 待重构
+     */
+    function writeLog()
+    {
+
+    }
+}
+
+if (!function_exists('cache')) {
+    /**
+     * 缓存操作 @todo 待重构
+     */
+    function cache()
+    {
+
+    }
+}
+
+if (!function_exists('lang')) {
+    /**
+     * 获取对应语言的KEY @todo 待重构语言
+     */
+    function lang($key)
+    {
+        return $key;
     }
 }
 
@@ -47,19 +80,9 @@ if (!function_exists('checkParams')) {
         }
         foreach ($params as $param) {
             if (empty(filter($method[$param]))) {
-                json('101', $param . " 参数不能为空");
+                json(101, $param . " 参数不能为空");
             }
         }
-    }
-}
-
-if (!function_exists('lang')) {
-    /**
-     * 获取对应语言的KEY @todo 待重构语言
-     */
-    function lang($key)
-    {
-        return $key;
     }
 }
 
@@ -326,7 +349,7 @@ if (!function_exists('getIp')) {
                 return $_SERVER[$key];
             }
         }
-        return '';
+        return null;
     }
 }
 
@@ -416,17 +439,10 @@ if (!function_exists('isMobile')) {
      */
     function isMobile()
     {
-        $mobilebrowser_list = array('iphone', 'android', 'phone', 'mobile', 'wap', 'netfront', 'java', 'opera mobi', 'opera mini',
-            'ucweb', 'windows ce', 'symbian', 'series', 'webos', 'sony', 'blackberry', 'dopod', 'nokia', 'samsung',
-            'palmsource', 'xda', 'pieplus', 'meizu', 'midp', 'cldc', 'motorola', 'foma', 'docomo', 'up.browser',
-            'up.link', 'blazer', 'helio', 'hosin', 'huawei', 'novarra', 'coolpad', 'webos', 'techfaith', 'palmsource',
-            'alcatel', 'amoi', 'ktouch', 'nexian', 'ericsson', 'philips', 'sagem', 'wellcom', 'bunjalloo', 'maui', 'smartphone',
-            'iemobile', 'spice', 'bird', 'zte-', 'longcos', 'pantech', 'gionee', 'portalmmm', 'jig browser', 'hiptop',
-            'benq', 'haier', '^lct', '320x320', '240x320', '176x220', 'pad', 'gt-p1000');
-
+        $mobileBrowserList = ['iphone', 'android', 'phone', 'mobile', 'wap', 'netfront', 'java', 'opera mobi', 'opera mini', 'ucweb', 'windows ce', 'symbian', 'series', 'webos', 'sony', 'blackberry', 'dopod', 'nokia', 'samsung', 'palmsource', 'xda', 'pieplus', 'meizu', 'midp', 'cldc', 'motorola', 'foma', 'docomo', 'up.browser', 'up.link', 'blazer', 'helio', 'hosin', 'huawei', 'novarra', 'coolpad', 'webos', 'techfaith', 'palmsource', 'alcatel', 'amoi', 'ktouch', 'nexian', 'ericsson', 'philips', 'sagem', 'wellcom', 'bunjalloo', 'maui', 'smartphone', 'iemobile', 'spice', 'bird', 'zte-', 'longcos', 'pantech', 'gionee', 'portalmmm', 'jig browser', 'hiptop', 'benq', 'haier', '^lct', '320x320', '240x320', '176x220', 'pad', 'gt-p1000'];
         $useragent = strtolower($_SERVER['HTTP_USER_AGENT']);
 
-        foreach ($mobilebrowser_list as $v) {
+        foreach ($mobileBrowserList as $v) {
             if (strpos($useragent, $v) !== false) {
                 return true;
             }
