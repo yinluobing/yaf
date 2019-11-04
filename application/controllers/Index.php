@@ -1,12 +1,8 @@
 <?php
 
 /**
- * @name IndexController
- * @author icker
- * @desc 默认控制器
+ * Class IndexController
  */
-
-
 class IndexController extends BaseController
 {
     public function init()
@@ -16,10 +12,12 @@ class IndexController extends BaseController
 
     /**
      * 网站首页入口
-     * @throws Yaf_Exception_TypeError
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function indexAction()
     {
-        return $this->twig->display('index/index.twig', $this->assign);
+        $this->twig->display('index/index.twig', $this->assign);
     }
 }
