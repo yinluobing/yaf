@@ -54,7 +54,7 @@ if (!function_exists('cache')) {
 
 if (!function_exists('lang')) {
     /**
-     * 获取对应语言的KEY @todo 待重构语言
+     * 获取对应语言的KEY @todo 待重构
      */
     function lang($key)
     {

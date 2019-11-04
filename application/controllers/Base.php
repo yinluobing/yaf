@@ -10,22 +10,26 @@ use Yaf\Registry;
  * Time: 下午1:53
  * @property \Medoo\Medoo $db
  * @property Redis $redis
+ * @property Twig_Environment $twig
  */
 class BaseController extends Controller_Abstract
 {
-    protected $twig = null;//twig
-    protected $db = null;//db
-    protected $assign = null;//模板赋值
-    protected $redis = null; //redis
+    protected $twig   = null;// twig
+    protected $db     = null;// db
+    protected $assign = null;// 模板赋值
+    protected $redis  = null;// redis
+    private   $config = null;// config
 
     /**
      * init 初始化函数
      */
     public function init()
     {
+        $this->config = Registry::get('config');
         $loader = new \Twig_Loader_Filesystem('views', APP_PATH);
-        $this->twig = new \Twig_Environment($loader, array(/* 'cache' => './compilation_cache', */
-        ));
+        $this->twig = new \Twig_Environment($loader, [
+            'cache' => $this->config->application->runtime->tpl,
+        ]);
 
         // 初始化assign
         $this->assign = [
