@@ -801,6 +801,36 @@ if (!function_exists('dump')) {
     }
 }
 
+if (!function_exists('getHeader')) {
+    /**
+     * @param $name
+     */
+    function getHeader($name = null)
+    {
+        if (function_exists('apache_request_headers') && $result = apache_request_headers()) {
+            $header = $result;
+        } else {
+            $header = [];
+            $server = $_SERVER;
+            foreach ($server as $key => $val) {
+                if (0 === strpos($key, 'HTTP_')) {
+                    $key = str_replace('_', '-', strtolower(substr($key, 5)));
+                    $header[$key] = $val;
+                }
+            }
+            if (isset($server['CONTENT_TYPE'])) {
+                $header['content-type'] = $server['CONTENT_TYPE'];
+            }
+            if (isset($server['CONTENT_LENGTH'])) {
+                $header['content-length'] = $server['CONTENT_LENGTH'];
+            }
+        }
+
+        $header = array_change_key_case($header);
+        return is_null($name) ? $header : $header[$name];
+    }
+}
+
 if (!function_exists('sendMail')) {
     /**
      * 发送邮件方法

@@ -84,12 +84,6 @@ class Bootstrap extends Bootstrap_Abstract
         \Yaf\Loader::import($this->config->application->directory . '/library/Function.php');
     }
 
-    // 加载语言
-    public function _initLang()
-    {
-
-    }
-
     // 是否显示错误提示
     public function _initError()
     {
