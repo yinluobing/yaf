@@ -2,6 +2,7 @@
 
 use think\facade\Cache;
 use think\facade\Log;
+use Utils\Lang;
 use Yaf\Dispatcher;
 use Yaf\Registry;
 
@@ -109,7 +110,8 @@ if (!function_exists('lang')) {
      */
     function lang(string $name, array $vars = [], string $lang = '')
     {
-        // @todo 获取语言变量
+        $Lang = Lang::instance();
+        return $Lang->get($name, $vars, $lang);
     }
 }
 
@@ -258,9 +260,9 @@ if (function_exists('removeXss')) {
             $danger = str_replace($allow, '', $danger);
         }
         $danger = str_replace(',', '|', $danger);
-        //替换所有危险标签
+        // 替换所有危险标签
         $content = preg_replace("/<\s*({$danger})[^>]*>[^<]*(<\s*\/\s*\\1\s*>)?/is", '', $content);
-        //替换所有危险的JS事件
+        // 替换所有危险的JS事件
         $content = preg_replace("/<([^>]*)({$event})\s*\=([^>]*)>/is", "<\\1 \\3>", $content);
         return $content;
     }
