@@ -1,5 +1,7 @@
 <?php
 
+use think\facade\Cache;
+use think\facade\Log;
 use Yaf\Dispatcher;
 use Yaf\Registry;
 
@@ -32,33 +34,82 @@ if (!function_exists('validateSign')) {
     }
 }
 
-if (!function_exists('writeLog')) {
+if (!function_exists('trace')) {
     /**
-     * 写入日志操作 @todo 待重构
+     * 记录日志信息
+     * @param mixed $log log信息 支持字符串和数组
+     * @param string $level 日志级别
+     * @return array|void
      */
-    function writeLog()
+    function trace($log, string $level = 'log')
     {
-
+        // 初始化配置
+        Log::init(Registry::get('log'));
+        Log::record($log, $level);
+        Log::save();
     }
 }
 
 if (!function_exists('cache')) {
     /**
-     * 缓存操作 @todo 待重构
+     * 缓存管理
+     * @param string $name 缓存名称
+     * @param mixed $value 缓存值
+     * @param mixed $options 缓存参数
+     * @param string $tag 缓存标签
+     * @return mixed
      */
-    function cache()
+    function cache(string $name = null, $value = '', $options = null, $tag = null)
     {
-
+        // 初始化配置
+        Cache::config(Registry::get('cache'));
+        if (is_null($name)) {
+            return Cache::instance();
+        }
+        if ('' === $value) {
+            // 获取缓存
+            try {
+                return 0 === strpos($name, '?') ? Cache::has(substr($name, 1)) : Cache::get($name);
+            } catch (\Psr\SimpleCache\InvalidArgumentException $e) {
+            }
+        } elseif (is_null($value)) {
+            // 删除缓存
+            try {
+                return Cache::delete($name);
+            } catch (\Psr\SimpleCache\InvalidArgumentException $e) {
+            }
+        }
+        // 缓存数据
+        if (is_array($options)) {
+            $expire = $options['expire'] ?? null; //修复查询缓存无法设置过期时间
+        } else {
+            $expire = $options;
+        }
+        if (is_null($tag)) {
+            try {
+                return Cache::set($name, $value, $expire);
+            } catch (\Psr\SimpleCache\InvalidArgumentException $e) {
+            }
+        } else {
+            try {
+                return Cache::tag($tag)->set($name, $value, $expire);
+            } catch (\Psr\SimpleCache\InvalidArgumentException $e) {
+            }
+        }
     }
 }
 
 if (!function_exists('lang')) {
     /**
-     * 获取对应语言的KEY @todo 待重构
+     * 获取语言变量值
+     * @param string $name 语言变量名
+     * @param array $vars 动态变量值
+     * @param string $lang 语言
+     * @return mixed
      */
-    function lang($key)
+    function lang(string $name, array $vars = [], string $lang = '')
     {
-        return $key;
+        // @todo 获取语言变量
     }
 }
 
@@ -239,15 +290,17 @@ if (!function_exists('cookie')) {
      * @param null $domain
      * @return mixed
      */
-    function cookie($key, $value, $exp = 3600 * 24 * 30, $domain = null)
+    function cookie($key, $value = '', $exp = 3600 * 24 * 30, $domain = null)
     {
         $config = Registry::get('config');
-        $pre = $config['application']['cookie']['pre'] ? $config['application']['cookie']['pre'] : '';
+        $pre = $config['cookie']['pre'] ? $config['cookie']['pre'] : '';
         $key = $pre . $key;
-        if ($value) {
-            setcookie($key, base64_encode(serialize($value)), time() + $exp, '/', $domain);
-        } else {
+        if (is_null($value)) {
+            setcookie($key, " ", strtotime('0000-00-00 00:00:00'));
+        } else if ('' === $value) {
             $value = unserialize(base64_decode(isset($_COOKIE[$key]) ? $_COOKIE[$key] : $value));
+        } else {
+            setcookie($key, base64_encode(serialize($value)), time() + $exp, '/', $domain);
         }
         return $value;
     }
@@ -321,7 +374,7 @@ if (!function_exists('uploads')) {
         $subdir = $dir . '/' . $subdir1 . '/' . $subdir2 . '/';
 
         $config = Registry::get('configarr');
-        $url = $config['application']['site']['uploadUri'];
+        $url = $config['site']['uploadUri'];
         $dir = PUBLIC_PATH . $url . $subdir;
         $dir = str_replace('//', '/', $dir);
 
@@ -616,7 +669,7 @@ if (!function_exists('url')) {
             }
             if ($url) {
                 $config = Registry::get('config');
-                $url = $config['application']['site']['domain'] . $url;
+                $url = $config['site']['domain'] . $url;
                 $params_other = array();
                 foreach ($params as $key => $value) {
                     if ($value === 0 || $key == 'page')
@@ -681,7 +734,7 @@ if (!function_exists('url')) {
             $route = $moduleName . '/' . $controllerName . '/' . $actionName;
         }
         $config = Registry::get('config');
-        $url = $config['application']['site']['domain'];
+        $url = $config['site']['domain'];
         $url = $url . $route;
         $url = rtrim($url, '/');
         foreach ($params as $key => $value) {

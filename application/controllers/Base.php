@@ -26,10 +26,9 @@ class BaseController extends Controller_Abstract
     public function init()
     {
         $this->config = Registry::get('config');
-        $loader = new \Twig_Loader_Filesystem('views', APP_PATH);
-        $this->twig = new \Twig_Environment($loader, [
-            'cache' => $this->config->application->runtime->tpl,
-        ]);
+        $this->twig = Registry::get('twig');
+        $this->db = Registry::get('db');
+        $this->redis = Registry::get('redis');
 
         // 初始化assign
         $this->assign = [
@@ -37,8 +36,5 @@ class BaseController extends Controller_Abstract
             'keywords'    => '网站关键词',
             'description' => '网站描述',
         ];
-
-        $this->db = Registry::get('db');
-        $this->redis = Registry::get('redis');
     }
 }
