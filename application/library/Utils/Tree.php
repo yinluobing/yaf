@@ -14,8 +14,8 @@ class Tree
 {
     protected static $instance;
     //默认配置
-    protected $config = [];
-    public $options = [];
+    protected $config  = [];
+    public    $options = [];
     /**
      * 生成树型结构所需要的2维数组
      * @var array
@@ -25,8 +25,8 @@ class Tree
      * 生成树型结构所需修饰符号，可以换成图片
      * @var array
      */
-    public $icon = array('│', '├', '└');
-    public $nbsp = "&nbsp;";
+    public $icon    = array('│', '├', '└');
+    public $nbsp    = "&nbsp;";
     public $pidname = 'pid';
 
     public function __construct($options = [])
@@ -38,7 +38,7 @@ class Tree
      * 初始化
      * @access public
      * @param array $options 参数
-     * @return Tree
+     * @return static
      */
     public static function instance($options = [])
     {

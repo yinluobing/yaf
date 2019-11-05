@@ -13,7 +13,22 @@ use Help;
  */
 class Image
 {
-    public static $fillWhite = true;
+    public static  $fillWhite = true;
+    private static $instance;
+
+    /**
+     * 初始化
+     * @access public
+     * @param array $options 参数
+     * @return static
+     */
+    public static function instance($options = [])
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new static($options);
+        }
+        return self::$instance;
+    }
 
     /**
      * 生成缩略图

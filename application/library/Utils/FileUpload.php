@@ -13,6 +13,7 @@ class FileUpload
 {
 
     const VERSION = '1.5';
+    private static $instance;
 
     // upload function name
     private $upload_function = 'move_uploaded_file';
@@ -93,6 +94,20 @@ class FileUpload
     private $destination_permissions = 0777;
 
     private $returnurl = array();
+
+    /**
+     * 初始化
+     * @access public
+     * @return static
+     */
+    public static function instance()
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new static();
+        }
+        return self::$instance;
+    }
+
 
     // 初始化
     public function __construct()
