@@ -18,7 +18,6 @@ class runPlugin extends Yaf\Plugin_Abstract
      */
     public function routerStartup(\Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
     {
-        // 记录日志 @todo 记录请求日志
         $param['request'] = $request->getRequest();
         $param['cookie'] = $request->getCookie();
         $param['header'] = getHeader();
@@ -46,13 +45,14 @@ class runPlugin extends Yaf\Plugin_Abstract
      */
     public function postDispatch(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
     {
-//        $config = \Yaf\Registry::get('config');
-        // 记录日志 @todo sql日志、以及用户日志
         /** @var \Medoo\Medoo $db */
         $db = Registry::get('db');
+        $dbMaster = Registry::get('dbMaster');
         $param = $db->log();
+        $paramMaster = $dbMaster->log();
         if (Registry::get('config')->application->debug) {
             trace($param, 'sql');
+            trace($paramMaster, 'sql');
         }
     }
 

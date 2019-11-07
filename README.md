@@ -1,11 +1,7 @@
 <h1 align="center">Yaf基本封装</h1>
-<h3 align="center">https://github.com/yinluobing/yaf</h3>
-<p align="center">QQ：1093260919</p>
 
 #### 包含以下内容的使用方法
-
 - Twig
-- SeasLog
 - Medoo
 - 阿里云短信
 - PHPMailer
@@ -15,7 +11,7 @@
 - Swoole
 - JWT
 
-## 安装说明
+### 安装说明
 
 
 
@@ -49,22 +45,10 @@ location ~ \.php(.*)$ {
 
 ## 使用说明
 
-#### SeasLog日志
-详细使用方法参考 https://github.com/Neeke/SeasLog
-
-如需启用, 请取消注释, 引入位置在
-
-/application/controller/Base.php
-
-````
-protected function init()
-{
-    $this->twig = Yaf_Registry::get('twig');
-    // SeasLog 日志设置
-    // SeasLog::setBasePath('/data/log');
-    // SeasLog::setLogger('kaoqin');
-}
-````
+#### Log日志
+```
+trace('this is log','info');
+```
 
 
 #### 数据库操作 [Medoo]

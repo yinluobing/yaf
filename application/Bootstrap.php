@@ -99,6 +99,17 @@ class Bootstrap extends Bootstrap_Abstract
     {
         $db = new \Medoo\Medoo([
             'database_type' => 'mysql',
+            'database_name' => $this->config->db->slave->database,
+            'server'        => $this->config->db->slave->hostname,
+            'username'      => $this->config->db->slave->username,
+            'password'      => $this->config->db->slave->password,
+            'prefix'        => $this->config->db->slave->prefix,
+            'logging'       => $this->config->db->slave->log,
+            'charset'       => 'utf8mb4'
+        ]);
+
+        $dbMaster = new \Medoo\Medoo([
+            'database_type' => 'mysql',
             'database_name' => $this->config->db->database,
             'server'        => $this->config->db->hostname,
             'username'      => $this->config->db->username,
@@ -107,8 +118,10 @@ class Bootstrap extends Bootstrap_Abstract
             'logging'       => $this->config->db->log,
             'charset'       => 'utf8mb4'
         ]);
+
         // 注册db
         Registry::set('db', $db);
+        Registry::set('dbMaster', $dbMaster);
     }
 
     // 加载redis
