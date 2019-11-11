@@ -8,7 +8,7 @@ use Yaf\Registry;
  * User: icker
  * Date: 2017/9/4
  * Time: 下午1:53
- * @property \Medoo\Medoo $db
+ * @property \Medoo\MedooManager $db
  * @property Redis $redis
  * @property Twig_Environment $twig
  */

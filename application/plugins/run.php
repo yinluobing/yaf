@@ -45,14 +45,12 @@ class runPlugin extends Yaf\Plugin_Abstract
      */
     public function postDispatch(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
     {
-        /** @var \Medoo\Medoo $db */
+        /** @var \Medoo\MedooManager $db */
         $db = Registry::get('db');
-        $dbMaster = Registry::get('dbMaster');
-        $param = $db->log();
-        $paramMaster = $dbMaster->log();
+        $param['master'] = $db->master->log();
+        $param['slave'] = $db->slave->log();
         if (Registry::get('config')->application->debug) {
             trace($param, 'sql');
-            trace($paramMaster, 'sql');
         }
     }
 

@@ -273,9 +273,11 @@ if (!function_exists('session')) {
      * @param $key
      * @param $value
      */
-    function session($key, $value)
+    function session($key, $value = '')
     {
-        if ($value) {
+        if (is_null($value)) {
+            \Yaf\Session::getInstance()->del($key);
+        } else if ($value) {
             \Yaf\Session::getInstance()->set($key, $value);
         } else {
             \Yaf\Session::getInstance()->get($key);
