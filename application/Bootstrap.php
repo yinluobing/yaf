@@ -35,7 +35,6 @@ class Bootstrap extends Bootstrap_Abstract
             'level'        => [],
             // 日志类型记录的通道 ['error'=>'email',...]
             'type_channel' => [],
-
             // 日志通道列表
             'channels'     => [
                 'file' => [
@@ -76,7 +75,7 @@ class Bootstrap extends Bootstrap_Abstract
         ]);
 
         // 关闭自动加载模板
-        Dispatcher::getInstance()->autoRender(FALSE);
+        Dispatcher::getInstance()->autoRender(false);
     }
 
     // 加载公共函数

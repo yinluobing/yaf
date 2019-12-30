@@ -11,11 +11,9 @@ use Yaf\Registry;
 class BaseModel
 {
     protected $db = null;
-    protected $dbMaster = null;
 
     public function __construct()
     {
         $this->db = Registry::get('db');
-        $this->dbMaster = Registry::get('dbMaster');
     }
 }
